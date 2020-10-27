@@ -6,13 +6,17 @@ const autoprefixer = require('autoprefixer');
 const glob = require("glob");
 const globConcat = require("glob-concat");
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
 
 
 module.exports = {
 	entry : './src/index.js',
 	plugins: [
 		new HtmlWebpackPlugin({template: './public/index.html'}),
-		new CleanWebpackPlugin()
+		new CleanWebpackPlugin(),
+		new MiniCssExtractPlugin({
+			filename: 'style.css'
+		})
 	],
 	output: {
 		filename: 'index.bundle.js',
@@ -29,7 +33,10 @@ module.exports = {
 				test: /\.less$/,
 				use:  [
 					{
-						loader: 'style-loader'
+						loader: MiniCssExtractPlugin.loader,
+						options: {
+							publicPath: '.'
+						}
 					},
 					{
 					   	loader: 'css-loader',
@@ -50,7 +57,10 @@ module.exports = {
 				test: /\.css$/i,
 				use: [
 					{
-						loader: 'style-loader'
+						loader: MiniCssExtractPlugin.loader,
+						options: {
+							publicPath: '.'
+						}
 					},
 					{
 					   	loader: 'css-loader',
@@ -63,10 +73,23 @@ module.exports = {
 			},
 			{
 				test: /\.jpe?g$/i,
-				loader: 'file-loader',
-				options: {
-					name: '[name].[ext]',
-				},				
+				use: [
+					{
+						loader: 'file-loader',
+						options: {
+							name: '[path][name].[ext]',
+						},	
+					},
+					{
+						loader: ImageMinimizerPlugin.loader,
+			            options: {
+			              	severityError: 'warning',
+			              	minimizerOptions: {
+			                	plugins: ['gifsicle'],
+			              	},
+			            },
+					}
+				]			
 			}
 		]
 	}

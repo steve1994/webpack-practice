@@ -13,7 +13,10 @@ module.exports = {
 	entry : './src/index.js',
 	plugins: [
 		new HtmlWebpackPlugin({template: './src/index.html'}),
-		new CleanWebpackPlugin()
+		new CleanWebpackPlugin(),
+		new MiniCssExtractPlugin({
+			filename: 'style.css'
+		})
 	],
 	output: {
 		filename: 'index.bundle.js',
@@ -28,12 +31,12 @@ module.exports = {
 		    },
 			{
 				test: /\.less$/,
-				include: [
-                    path.resolve(__dirname, "./less")
-                ],
 				use:  [
 					{
-						loader: 'style-loader'
+						loader: MiniCssExtractPlugin.loader,
+						options: {
+							publicPath: '.'
+						}
 					},
 					{
 					   	loader: 'css-loader',

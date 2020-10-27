@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import Landing from './component/Landing';
 import reportWebVitals from './reportWebVitals';
+import '../less/style.less';
 
 ReactDOM.render(
   <React.StrictMode>
