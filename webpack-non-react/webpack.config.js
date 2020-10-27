@@ -13,9 +13,7 @@ module.exports = {
 	entry : './src/index.js',
 	plugins: [
 		new HtmlWebpackPlugin({template: './src/index.html'}),
-		new CleanWebpackPlugin(),
-		extractCSS,
-		extractLess
+		new CleanWebpackPlugin()
 	],
 	output: {
 		filename: 'index.bundle.js',
