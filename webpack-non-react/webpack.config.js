@@ -7,15 +7,36 @@ const glob = require("glob");
 const globConcat = require("glob-concat");
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
+const MergeIntoSingleFilePlugin = require('webpack-merge-and-include-globally');
 
+let pathsToClean = ['./dist'];
+let cleanOptions = {
+	root: path.resolve(__dirname),
+	exclude: ['test.txt','dummy/*'],
+	verbose: true,
+	dry: false
+}
 
 module.exports = {
 	entry : './src/index.js',
 	plugins: [
 		new HtmlWebpackPlugin({template: './src/index.html'}),
-		new CleanWebpackPlugin(),
+		new CleanWebpackPlugin({
+			cleanOnceBeforeBuildPatterns: ['./img/*','./index.html','./plugins.min.js','./style.css','./index.bundle.js'],
+		}),
 		new MiniCssExtractPlugin({
 			filename: 'style.css'
+		}),
+		new MergeIntoSingleFilePlugin({
+			files: {
+				'plugins.min.js': [
+					'./node_modules/clientjs/dist/client.min.js',
+					'./node_modules/jquery.payment/lib/jquery.payment.min.js'
+				]
+			},
+			transform: {
+				'plugins.min.js': code => require('uglify-js').minify(code).code
+			}
 		})
 	],
 	output: {
